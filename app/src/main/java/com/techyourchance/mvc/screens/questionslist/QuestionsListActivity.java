@@ -1,13 +1,7 @@
 package com.techyourchance.mvc.screens.questionslist;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.view.LayoutInflater;
 import android.widget.Toast;
 
 import com.techyourchance.mvc.R;
@@ -27,28 +21,26 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class QuestionsListActivity extends BaseActivity implements
-        QuestionsListAdapter.OnQuestionClickListener {
+public class QuestionsListActivity extends BaseActivity implements QuestionListViewMvcImpl.Listener {
 
     private StackoverflowApi mStackoverflowApi;
 
-    private ListView mLstQuestions;
-    private QuestionsListAdapter mQuestionsListAdapter;
+    private QuestionListViewMvcImpl mView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_questions_list);
 
-        mLstQuestions = findViewById(R.id.lst_questions);
-        mQuestionsListAdapter = new QuestionsListAdapter(this, this);
-        mLstQuestions.setAdapter(mQuestionsListAdapter);
+        mView = new QuestionListViewMvcImpl(LayoutInflater.from(this), null);
+        mView.registerListener(this);
 
         mStackoverflowApi = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(StackoverflowApi.class);
+
+        setContentView(mView.getRootView());
     }
 
     @Override
@@ -73,7 +65,7 @@ public class QuestionsListActivity extends BaseActivity implements
                     public void onFailure(Call<QuestionsListResponseSchema> call, Throwable t) {
                         networkCallFailed();
                     }
-                } );
+                });
     }
 
     private void bindQuestions(List<QuestionSchema> questionSchemas) {
@@ -81,9 +73,8 @@ public class QuestionsListActivity extends BaseActivity implements
         for (QuestionSchema questionSchema : questionSchemas) {
             questions.add(new Question(questionSchema.getId(), questionSchema.getTitle()));
         }
-        mQuestionsListAdapter.clear();
-        mQuestionsListAdapter.addAll(questions);
-        mQuestionsListAdapter.notifyDataSetChanged();
+        mView.bindQuestions(questions);
+
     }
 
     private void networkCallFailed() {
@@ -93,5 +84,11 @@ public class QuestionsListActivity extends BaseActivity implements
     @Override
     public void onQuestionClicked(Question question) {
         Toast.makeText(this, question.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mView.unregisterListener(this);
     }
 }
