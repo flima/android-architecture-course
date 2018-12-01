@@ -7,18 +7,13 @@ import android.widget.TextView;
 
 import com.techyourchance.mvc.R;
 import com.techyourchance.mvc.questions.Question;
+import com.techyourchance.mvc.screens.common.BaseObservableViewMvc;
 
-import java.util.ArrayList;
-import java.util.List;
+public class QuestionsListItemViewMvcImpl extends BaseObservableViewMvc<QuestionsListItemViewMvc.Listener> implements QuestionsListItemViewMvc {
 
-public class QuestionsListItemViewMvcImpl implements QuestionsListItemViewMvc {
-
-    private final View mRootView;
     private final TextView mTxtTitle;
 
     private Question mQuestion;
-
-    private final List<Listener> mListeners = new ArrayList<>();
 
     public QuestionsListItemViewMvcImpl(LayoutInflater inflater, ViewGroup parent) {
         mRootView = inflater.inflate(R.layout.layout_question_list_item, parent, false);
@@ -26,26 +21,11 @@ public class QuestionsListItemViewMvcImpl implements QuestionsListItemViewMvc {
         mRootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (Listener listener : mListeners) {
+                for (Listener listener : getListeners()) {
                     listener.onQuestionClicked(mQuestion);
                 }
             }
         });
-    }
-
-    @Override
-    public void registerListener(Listener listener) {
-        mListeners.add(listener);
-    }
-
-    @Override
-    public void unregisterListener(Listener listener) {
-        mListeners.remove(listener);
-    }
-
-    @Override
-    public View getRootView() {
-        return mRootView;
     }
 
     @Override

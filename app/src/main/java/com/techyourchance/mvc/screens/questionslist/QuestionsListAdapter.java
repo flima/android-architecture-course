@@ -7,9 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
-import com.techyourchance.mvc.R;
 import com.techyourchance.mvc.questions.Question;
 
 public class QuestionsListAdapter extends ArrayAdapter<Question> implements QuestionsListItemViewMvc.Listener {
@@ -39,7 +37,7 @@ public class QuestionsListAdapter extends ArrayAdapter<Question> implements Ques
 
         final Question question = getItem(position);
 
-        QuestionsListItemViewMvc viewMvc  = (QuestionsListItemViewMvc) convertView.getTag();
+        QuestionsListItemViewMvc viewMvc = (QuestionsListItemViewMvc) convertView.getTag();
         viewMvc.bindQuestion(question);
 
         return convertView;
