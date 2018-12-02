@@ -10,13 +10,13 @@ import com.techyourchance.mvc.screens.common.BaseObservableViewMvc;
 
 import java.util.List;
 
-public class QuestionListViewMvcImpl extends BaseObservableViewMvc<QuestionListViewMvc.Listener> implements QuestionListViewMvc,
+public class QuestionsListViewMvcImpl extends BaseObservableViewMvc<QuestionsListViewMvc.Listener> implements QuestionsListViewMvc,
         QuestionsListAdapter.OnQuestionClickListener {
 
     private ListView mLstQuestions;
     private QuestionsListAdapter mQuestionsListAdapter;
 
-    public QuestionListViewMvcImpl(LayoutInflater inflater, ViewGroup viewGroup) {
+    public QuestionsListViewMvcImpl(LayoutInflater inflater, ViewGroup viewGroup) {
         mRootView = inflater.inflate(R.layout.layout_questions_list, viewGroup, false);
 
         mLstQuestions = findViewById(R.id.lst_questions);

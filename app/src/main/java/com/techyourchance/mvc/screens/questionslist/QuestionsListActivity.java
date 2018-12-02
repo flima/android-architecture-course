@@ -8,7 +8,7 @@ import com.techyourchance.mvc.R;
 import com.techyourchance.mvc.common.Constants;
 import com.techyourchance.mvc.networking.QuestionSchema;
 import com.techyourchance.mvc.networking.QuestionsListResponseSchema;
-import com.techyourchance.mvc.networking.StackoverflowApi;
+import com.techyourchance.mvc.networking.StackOverFlowApi;
 import com.techyourchance.mvc.questions.Question;
 import com.techyourchance.mvc.screens.common.BaseActivity;
 
@@ -18,23 +18,21 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class QuestionsListActivity extends BaseActivity implements QuestionListViewMvcImpl.Listener {
+public class QuestionsListActivity extends BaseActivity implements QuestionsListViewMvcImpl.Listener {
 
-    private StackoverflowApi mStackoverflowApi;
+    private StackOverFlowApi mStackOverFlowApi;
 
-    private QuestionListViewMvcImpl mView;
+    private QuestionsListViewMvc mView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mView = new QuestionListViewMvcImpl(LayoutInflater.from(this), null);
+        mView = getCompositionRoot().getViewMvcFactory().getQuestionsListViewMvc();
         mView.registerListener(this);
 
-        mStackoverflowApi = getCompositionRoot().getStackOverFlowApi();
+        mStackOverFlowApi = getCompositionRoot().getStackOverFlowApi();
 
         setContentView(mView.getRootView());
     }
@@ -46,7 +44,7 @@ public class QuestionsListActivity extends BaseActivity implements QuestionListV
     }
 
     private void fetchQuestions() {
-        mStackoverflowApi.fetchLastActiveQuestions(Constants.QUESTIONS_LIST_PAGE_SIZE)
+        mStackOverFlowApi.fetchLastActiveQuestions(Constants.QUESTIONS_LIST_PAGE_SIZE)
                 .enqueue(new Callback<QuestionsListResponseSchema>() {
                     @Override
                     public void onResponse(Call<QuestionsListResponseSchema> call, Response<QuestionsListResponseSchema> response) {
@@ -70,7 +68,6 @@ public class QuestionsListActivity extends BaseActivity implements QuestionListV
             questions.add(new Question(questionSchema.getId(), questionSchema.getTitle()));
         }
         mView.bindQuestions(questions);
-
     }
 
     private void networkCallFailed() {
